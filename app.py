@@ -1,10 +1,16 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, render_template_string, session
-import time, random, math
+from flask_sqlalchemy import SQLAlchemy
+import time, random, math, os
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # You need to set a secret key for sessions
 
 matrix_data = [[{'title': f'Row {i}, Col {j}'} for j in range(3)] for i in range(3)]
+
+# Use the DATABASE_URL environment variable from Heroku
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+
+db = SQLAlchemy(app)
 
 
 # Define a dictionary to store the current button texts
