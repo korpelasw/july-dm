@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Button Sets</title>
+    <style>
+        body {
+            background-color: bisque; /* Set the default background color */
+            font-family: 'Roboto', sans-serif; /* Use the Roboto font family */
+            margin: 0;
+            overflow: hidden; /* Prevent scrolling */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-wrap: wrap; /* Allow items to wrap to the next line */
+        }
+
+        .random-button {
+            font-size: 11px; /* Set the font size */
+            padding: 20px;
+            width: 100px; /* Set button width */
+            height: 50px; /* Set button height */
+            margin: 10px; /* Adjust margin as needed */
+            background-color: lightgray; /* Button background color */
+            border: none; /* Remove button border */
+            cursor: pointer; /* Set cursor to pointer */
+            position: absolute; /* Required for absolute positioning of buttons */
+            display: inline-block; /* Ensure buttons are displayed inline */
+            text-align: center; /* Center text horizontally */
+            line-height: 0px; /* Set line height to match button height for vertical centering */
+        }   
+
+        h1 {
+            position: absolute;
+            top: 10px; /* Distance from the top */
+            left: 10px; /* Distance from the left */
+            margin: 0; /* Remove default margin */
+            font-size: 24px; /* Set font size */
+        }
+
+        /* Style for fixed buttons */
+        .fixed-button {
+            width: 100px;
+            background-color: #008CBA;
+            color: white;
+            border-radius: 10px;
+            position: fixed;
+            top: 40px; /* Adjust top position as needed */
+            left: 10px; /* Adjust left position as needed */
+            display: block;
+        }
+    </style>
+    <!-- Link to the Roboto font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1>Random Button Sets</h1>
+    <div id="buttons-container"></div>
+
+    <!-- Fixed buttons -->
+    <button id="clickButtonA" class="fixed-button">Hotel 1</button>
+    <button id="clickButtonB" class="fixed-button" style="left: 114px;">Hotel 2</button>
+    <button id="clickButtonC" class="fixed-button" style="left: 228px;">Hotel 3</button>
+
+    <script>
+        // Get the refresh count from the server
+        const refreshCount = JSON.parse('{{ refresh_count|tojson }}');;
+        
+        // Log the refresh count to the console
+        console.log(`Page refresh count: ${refreshCount}`);
+
+
+         document.addEventListener('DOMContentLoaded', (event) => {
+            const buttonsContainer = document.getElementById('buttons-container');
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+
+            fetch(`/create_buttons?task_name=task1&screen_width=${screenWidth}&screen_height=${screenHeight}`)
+                .then(response => response.json())
+                .then(data => {
+                    buttonsContainer.innerHTML = data.button_html;
+
+                    // Add event listeners to dynamically created buttons
+                    const buttons = document.querySelectorAll('.random-button');
+                    buttons.forEach(button => {
+                        button.addEventListener('click', () => handleButtonClick(button.id));
+                    });
+
+                    const fixedButtons = document.querySelectorAll('#clickButtonA, #clickButtonB, #clickButtonC');
+                    fixedButtons.forEach(button => {
+                        button.addEventListener('click', () => handleButtonClick(button.id));
+                    });
+                });
+
+            function handleButtonClick(buttonId) {
+                console.log(`Button ${buttonId} clicked`);
+
+                // Placeholder for any logic to handle button click
+                alert(`Button ${buttonId} clicked!`);
+
+                // Get the original button title
+                const button = document.getElementById(buttonId);
+                const originalButtonText = button.textContent;
+
+                if (buttonId.startsWith('button')){
+                    fetch('/handle_button', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ button_id: buttonId, task_name: 'task1' }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+
+                        // Change the button text
+                        button.textContent = data.new_button_text;
+                        // Revert the button text back to its original value after 10 seconds
+                        setTimeout(() => {
+                            button.textContent = originalButtonText; // Revert to the original button text
+                        }, 6000);
+                    });
+
+                } else if (buttonId.startsWith('clickButton')) {
+                    fetch('/handle_button', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ button_id: buttonId, task_name: 'task1' }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                    
+                    if (refreshCount < 10){
+                        location.reload();
+                    }
+                    else{
+                        window.location.href = '/task2';
+                    }
+
+                    /*if (data.command === 'change_background_lightgreen') {
+                        document.body.style.backgroundColor = 'lightgreen';
+                        hideFixedButtons()
+                        hideRandomButtons()
+                    } else if (data.command === 'change_background_red') {
+                        document.body.style.backgroundColor = 'indianred';
+                        hideFixedButtons()
+                        hideRandomButtons()
+                    }*/
+                    // Handle clicks on fixed buttons
+                    console.log(`Fixed button ${buttonId} clicked`);
+                });
+                }
+            }
+            
+
+            function hideFixedButtons() {
+                document.getElementById('clickButtonA').style.display = 'none';
+                document.getElementById('clickButtonB').style.display = 'none';
+                document.getElementById('clickButtonC').style.display = 'none';
+            }
+            function hideRandomButtons() {
+                const buttons = document.querySelectorAll('.random-button');
+                buttons.forEach(button => {
+                    button.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

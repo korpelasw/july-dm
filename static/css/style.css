@@ -1,0 +1,102 @@
+body{
+    background-color: bisque;
+}
+table {
+    display: block;
+    margin: 20px auto;
+    border-collapse: collapse;
+}
+td {
+    font-size: 24px;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+}
+h1 {
+    color: cornflowerblue;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+p {
+   color:rgb(0, 0, 0); 
+}
+p2 {
+    color: rgb(0, 0, 0);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+}
+/* Style for the refresh button */
+#refreshButton {
+    background-color: orange; /* Green background */
+    color: white; /* White text */
+    border-radius: 20px;
+    padding: 15px 32px; /* Padding */
+    text-align: center; /* Center text */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Cursor on hover */
+    margin-top: 20px; /* Top margin */
+    position: absolute;
+    bottom: 20%;
+    left: 48%;
+    transform: translateX(-50%);
+}
+
+/* Style for the refresh button on hover */
+#refreshButton:hover {
+    background-color: darkgoldenrod; /* Darker green */
+}
+
+/* CSS for radio buttons */
+input[type="radio"] {
+
+    /* Your custom styles here */
+    position: relative; /* Set position to relative */
+    top: 4px; /* Adjust vertical position */
+    left: 4px; /* Adjust horizontal position */
+
+    /* Size and appearance */
+    width: 20px;
+    height: 20px;
+    margin-right: 5px; /* Adjust spacing between radio button and label */
+    cursor: pointer; /* Change cursor to pointer on hover */
+
+    /* Styling */
+    border-radius: 50%; /* Make the radio button circular */
+    border: 2px solid #999; /* Add a border */
+    background-color: #fff; /* Background color */
+}
+
+/* CSS for radio button labels */
+label.radio-label {
+    /* Styling */
+    font-size: 16px;
+    color: #333; /* Label text color */
+    cursor: pointer; /* Change cursor to pointer on hover */
+}
+/* Style the tab buttons */
+.tablink {
+    background-color: #f2f2f2;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    transition: background-color 0.3s;
+    border-radius: 20px;
+  }
+  
+  /* Change background color of active tab */
+  .tablink.active {
+    background-color: #dddddd;
+  }
+  
+  /* Style the tab content */
+  .tabcontent {
+    display: none;
+    padding: 20px;
+    
+  }
+  
+  /* Show the active tab */
+  .tabcontent.active {
+    display: block;
+  }

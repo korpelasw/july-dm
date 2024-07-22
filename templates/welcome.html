@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: bisque;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+            color: #666;
+            
+        }
+        h2 {
+            font-size: 18px;
+            color: #333;
+            margin-top: 50px;
+            text-align: left;
+            font-weight: normal;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .hero-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ title }}</h1>
+    <img src="{{ url_for('static', filename='/pallo.png') }}" alt="Your Image" class="hero-image">
+    <p>{{ message }}</p>
+    <form action="{{ task1_url }}" method="get">
+        <input type="text" name="username" placeholder="Enter your user ID" required>
+        <button type="submit">{{ button_text }}</button>
+    </form>
+    <h2>{{ message2 }}</h2>
+</body>
+</html>

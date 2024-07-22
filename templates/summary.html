@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask and JavaScript App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1 id="taskTitle">Summary of your test results!</h1>
+    <p id="taskDescription">Congratulations! You have reached the end of this testing session. Below you can see your total score and the time you took to completed all the tasks.</p>
+    <div id="ui-elements"></div>
+    <div id="message"></div>
+    <div id="points">Points: {{ session['points'] }}</div>
+    <div id="singleButtonContainer">
+        <!-- Single button will be inserted here -->
+    </div>
+
+    <script>
+
+
+    </script>
+</body>
+</html>

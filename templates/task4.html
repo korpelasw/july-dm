@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stacked Button Sets</title>
+    <style>
+        body {
+            background-color: bisque; /* Set the default background color */
+            font-family: 'Roboto', sans-serif; /* Use the Roboto font family */
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px; /* Gap between stacks */
+        }
+
+        .button-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px; /* Gap between buttons in each stack */
+        }
+
+        .stacked-button {
+            font-size: 11px; /* Set the font size */
+            width: 100px; /* Set button width */
+            height: 50px; /* Set button height */
+            background-color: lightgray; /* Button background color */
+            border: none; /* Remove button border */
+            cursor: pointer; /* Set cursor to pointer */
+            text-align: center; /* Center text horizontally */
+            line-height: 50px; /* Center text vertically by matching button height */
+            border-radius: 10px; /* Optional: add border radius */
+        }
+
+        h1 {
+            position: absolute;
+            top: 10px; /* Distance from the top */
+            left: 10px; /* Distance from the left */
+            margin: 0; /* Remove default margin */
+            font-size: 24px; /* Set font size */
+        }
+        .fixed-button {
+            width: 100px;
+            background-color: #008CBA;
+            color: white;
+            border-radius: 10px;
+            position: fixed;
+            top: 40px; /* Adjust top position as needed */
+            left: 10px; /* Adjust left position as needed */
+            display: block; /* Initially hide the buttons */
+        }
+    </style>
+    <!-- Link to the Roboto font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1>Stacked Button Sets</h1>
+    <div id="buttons-container" class="button-container"></div>
+
+    <!-- Fixed buttons -->
+    <button id="clickButtonA" class="fixed-button">Hotel 1</button>
+    <button id="clickButtonB" class="fixed-button" style="left: 114px;">Hotel 2</button>
+    <button id="clickButtonC" class="fixed-button" style="left: 228px;">Hotel 3</button>
+
+    <script>
+         // Get the refresh count from the server
+         const refreshCount = JSON.parse('{{ refresh_count|tojson }}');;
+        
+        // Log the refresh count to the console
+        console.log(`Page refresh count: ${refreshCount}`);
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const buttonsContainer = document.getElementById('buttons-container');
+
+            fetch('/create_buttons_task4')
+                .then(response => response.json())
+                .then(data => {
+                    buttonsContainer.innerHTML = data.button_html;
+
+                    // Add event listeners to dynamically created buttons
+                    const buttons = document.querySelectorAll('.stacked-button');
+                    buttons.forEach(button => {
+                        button.addEventListener('click', () => handleButtonClick(button.id));
+                    });
+
+                    const fixedButtons = document.querySelectorAll('#clickButtonA, #clickButtonB, #clickButtonC');
+                    fixedButtons.forEach(button => {
+                        button.addEventListener('click', () => handleButtonClick(button.id));
+                    });
+                });
+
+            function handleButtonClick(buttonId) {
+                console.log(`Button ${buttonId} clicked`);
+
+                // Placeholder for any logic to handle button click
+                alert(`Button ${buttonId} clicked!`);
+
+                // Get the original button title
+                const button = document.getElementById(buttonId);
+                const originalButtonText = button.textContent;
+
+                if (buttonId.startsWith('button')){
+                    fetch('/handle_button', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ button_id: buttonId, task_name: 'task4' }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+
+                        // Change the button text
+                        button.textContent = data.new_button_text;
+                        // Revert the button text back to its original value after 10 seconds
+                        setTimeout(() => {
+                            button.textContent = originalButtonText; // Revert to the original button text
+                        }, 8000);
+                    });
+
+                } else if (buttonId.startsWith('clickButton')) {
+                    fetch('/handle_button', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ button_id: buttonId, task_name: 'task4' }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                    
+                    if (refreshCount < 10){
+                        location.reload();
+                    }
+                    else{
+                        window.location.href = '/summary';
+                    }
+
+                    /*if (data.command === 'change_background_lightgreen') {
+                        document.body.style.backgroundColor = 'lightgreen';
+                        hideFixedButtons()
+                        hideRandomButtons()
+                    } else if (data.command === 'change_background_red') {
+                        document.body.style.backgroundColor = 'indianred';
+                        hideFixedButtons()
+                        hideRandomButtons()
+                    }*/
+                    // Handle clicks on fixed buttons
+                    console.log(`Fixed button ${buttonId} clicked`);
+                });
+                }
+            }
+            
+
+        });
+    </script>
+</body>
+</html>

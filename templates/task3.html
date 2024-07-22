@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task 3</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1 id="taskTitle">Task 3: Matrices with colors</h1>
+    <p id="taskDescription">Welcome to Task 3! Please choose the matrix which has more red cells.<br> If you think they have same amount of red cells, please press refresh button.</p>
+    <!-- Matrix tables -->
+    <div id="matrixContainer">
+        <table id="matrixTable1" border="1" style="position: absolute; top: 40%; left: 40%; transform: translate(-50%, -50%);">
+            {% for row in matrix1 %}
+            <tr>
+                {% for cell in row %}
+                <!--<td style="background-color: aquamarine;">{{ cell }}</td>-->
+                <td style="font-size: 24px; width: 60px; height: 60px; text-align: center; {% if cell < 0 %} color: red; background-color: red; {% else %} color: blue; background-color: blue; {% endif %}">.</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+
+        <table id="matrixTable2" border="1" style="position: absolute; top: 40%; left: 55%; transform: translate(-50%, -50%);">
+            {% for row in matrix2 %}
+            <tr>
+                {% for cell in row %}
+                <td style="font-size: 24px; color: {% if cell < 0 %} red {% else %} blue {% endif %}; background-color: {% if cell < 0 %} red {% else %} blue {% endif %}; width: 60px; height: 60px; text-align: center;">.</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+        <!-- Third button to refresh the page -->
+        <button id="refreshButton">Refresh</button>
+    </div>
+
+    <!-- UI elements, message, points, click counter -->
+    <div id="ui-elements"></div>
+    <div id="message"></div>
+    <div id="points">Points: {{ session['points'] }}</div>
+    <div id="click-counter">Clicks: 0</div>
+    <div id="singleButtonContainer">
+        <!-- Single button will be inserted here -->
+    </div>
+
+    <script>
+        let clickCount = 0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/create_buttons?task_name=task3')
+            .then(response => response.text())
+            .then(data => {
+                const uiElementsDiv = document.getElementById('ui-elements');
+                uiElementsDiv.innerHTML = data;
+
+                // Add event listeners to the dynamically created buttons
+                const buttonIds = ['clickButton5', 'clickButton6'];
+                buttonIds.forEach(buttonId => {
+                    const button = document.getElementById(buttonId);
+                    if (button) {
+                        button.addEventListener('click', () => handleButtonClick(buttonId));
+                    }
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add event listener to the refresh button
+            document.getElementById('refreshButton').addEventListener('click', () => {
+                location.reload();
+            });
+        });
+
+        function handleButtonClick(buttonId) {
+            console.log(`Button ${buttonId} clicked`);
+
+            clickCount++;
+
+            fetch('/handle_button', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ button_id: buttonId, task_name: 'task3', click_count: clickCount }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('message');
+                const pointsDiv = document.getElementById('points');
+                const clickCounterDiv = document.getElementById('click-counter');
+
+                if (data.command === 'change_background_lightgreen') {
+                    document.body.style.backgroundColor = 'lightgreen';
+                    messageDiv.textContent = 'Congratulations!';
+                    messageDiv.style.color = 'white';
+                    messageDiv.style.backgroundColor = 'green';
+                    messageDiv.style.fontSize = '24px';
+                    messageDiv.style.fontWeight = 'bold';
+                    messageDiv.style.padding = '10px';
+                    messageDiv.style.borderRadius = '5px';
+
+                    // Hide matrices after completing task2
+                    const matrixTable1 = document.getElementById("matrixTable1");
+                    matrixTable1.style.display = "none";
+
+                    const matrixTable2 = document.getElementById("matrixTable2");
+                    matrixTable2.style.display = "none";
+
+                    // Update single button HTML
+                    document.getElementById('singleButtonContainer').innerHTML = data.single_button_html;
+
+                    // Add event listener for the singleButton
+                    document.getElementById('singleButton').addEventListener('click', function() {
+                    // After completing task2, redirect to task4
+                        window.location.href = '/task4';
+                    });
+
+                    // Hide task buttons
+                    const taskButtons = ['clickButton5', 'clickButton6'];
+                    taskButtons.forEach(buttonId => {
+                        const button = document.getElementById(buttonId);
+                        if (button) {
+                            button.style.display = 'none';
+                        }
+                    });
+                    // Select the refresh button by its ID
+                    const refreshButton = document.getElementById('refreshButton');
+
+                    // Hide the refresh button
+                    refreshButton.style.display = 'none';
+
+                    hideTaskText()
+
+                } else if (data.command === 'change_background_red') {
+                    document.body.style.backgroundColor = 'indianred';
+                    messageDiv.textContent = 'Try again!';
+                    messageDiv.style.color = 'white';
+                    messageDiv.style.backgroundColor = 'darkred';
+                    messageDiv.style.fontSize = '24px';
+                    messageDiv.style.fontWeight = 'bold';
+                    messageDiv.style.padding = '10px';
+                    messageDiv.style.borderRadius = '5px';
+
+                    // Hide matrices after completing task2
+                    const matrixTable1 = document.getElementById("matrixTable1");
+                    matrixTable1.style.display = "none";
+
+                    const matrixTable2 = document.getElementById("matrixTable2");
+                    matrixTable2.style.display = "none";
+
+                    // Hide task buttons
+                    const taskButtons = ['clickButton5', 'clickButton6'];
+                    taskButtons.forEach(buttonId => {
+                        const button = document.getElementById(buttonId);
+                        if (button) {
+                            button.style.display = 'none';
+                        }
+                    });
+
+                    // Select the refresh button by its ID
+                    const refreshButton = document.getElementById('refreshButton');
+
+                    // Hide the refresh button
+                    refreshButton.style.display = 'none';
+
+                    // Update single button HTML
+                    document.getElementById('singleButtonContainer').innerHTML = data.single_button_html;
+
+                    // Add event listener for the singleButton
+                    document.getElementById('singleButton').addEventListener('click', function() {
+                    // Reload the page
+                        location.reload();
+                    });
+
+                    hideTaskText()
+                }
+
+                
+
+                pointsDiv.textContent = `Points: ${data.points}`;
+
+                clickCounterDiv.textContent = `Clicks: ${clickCount}`;
+            });
+        }
+
+        // Function to hide the task title and description
+        function hideTaskText() {
+            document.getElementById('taskTitle').style.display = 'none';
+            document.getElementById('taskDescription').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
