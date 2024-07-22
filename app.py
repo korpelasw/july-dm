@@ -8,7 +8,8 @@ app.secret_key = 'your_secret_key'  # You need to set a secret key for sessions
 matrix_data = [[{'title': f'Row {i}, Col {j}'} for j in range(3)] for i in range(3)]
 
 # Use the DATABASE_URL environment variable from Heroku
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'sqlite:///your_database.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
