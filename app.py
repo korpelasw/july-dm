@@ -1,5 +1,7 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, render_template_string, session
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from datetime import datetime
 import time, random, math, os
 
 app = Flask(__name__)
@@ -13,6 +15,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+migrate = Migrate(app, db)
+
+class Task(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    task_name = db.Column(db.String(80), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Task {self.task_name}>'
+    
 
 # Define a dictionary to store the current button texts
 button_texts = {}
@@ -129,7 +141,7 @@ button_width = 100
 button_height = 50
 
 button_positions = generate_random_positions(button_count, screen_width, screen_height, button_width, button_height)
-print(button_positions)
+
 
     # Add more tasks as needed
 highest_price_details = {}
@@ -396,6 +408,11 @@ def handle_button():
     # Update button state
     if button_id in button_states:
         button_states[button_id] = True
+
+     # Save task to the database
+    task = Task(task_name=task_name)
+    db.session.add(task)
+    db.session.commit()
 
     
     if task_name == 'task1' and button_id.startswith('button'):
