@@ -409,10 +409,7 @@ def handle_button():
     if button_id in button_states:
         button_states[button_id] = True
 
-     # Save task to the database
-    task = Task(task_name=task_name)
-    db.session.add(task)
-    db.session.commit()
+   
 
     
     if task_name == 'task1' and button_id.startswith('button'):
