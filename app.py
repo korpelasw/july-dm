@@ -204,9 +204,19 @@ def task2():
     for button_id in button_states:
         button_states[button_id] = False
 
+    # Increment refresh count
+    # Check if this is the user's first visit to the page
+    if 'task2_visited' not in session:
+        session['refresh_count'] = 0
+        session['task2_visited'] = True
+    else:
+        # Increment refresh count
+        refresh_count = session.get('refresh_count', 0)
+        session['refresh_count'] = refresh_count + 1
+
     matrix1, matrix2, negative_count1, negative_count2 = create_matrices()
 
-    return render_template('task2.html', matrix1=matrix1, matrix2=matrix2, negative_count1=negative_count1, negative_count2=negative_count2)
+    return render_template('task2.html', matrix1=matrix1, matrix2=matrix2, negative_count1=negative_count1, negative_count2=negative_count2, refresh_count=session['refresh_count'])
 
 @app.route('/task3')
 def task3():
@@ -217,7 +227,17 @@ def task3():
 
     matrix1, matrix2, negative_count1, negative_count2 = create_matrices()
 
-    return render_template('task3.html', matrix1=matrix1, matrix2=matrix2, negative_count1=negative_count1, negative_count2=negative_count2)
+     # Increment refresh count
+    # Check if this is the user's first visit to the page
+    if 'task3_visited' not in session:
+        session['refresh_count'] = 0
+        session['task3_visited'] = True
+    else:
+        # Increment refresh count
+        refresh_count = session.get('refresh_count', 0)
+        session['refresh_count'] = refresh_count + 1
+
+    return render_template('task3.html', matrix1=matrix1, matrix2=matrix2, negative_count1=negative_count1, negative_count2=negative_count2, refresh_count=session['refresh_count'])
 
 @app.route('/task4')
 def task4():

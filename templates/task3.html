@@ -43,6 +43,12 @@
     </div>
 
     <script>
+        // Get the refresh count from the server
+        const refreshCount = JSON.parse('{{ refresh_count|tojson }}');;
+        
+        // Log the refresh count to the console
+        console.log(`Page refresh count: ${refreshCount}`);
+
         let clickCount = 0;
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -111,7 +117,12 @@
                     // Add event listener for the singleButton
                     document.getElementById('singleButton').addEventListener('click', function() {
                     // After completing task2, redirect to task4
-                        window.location.href = '/task4';
+                        if (refreshCount < 10){
+                            location.reload();
+                        }
+                        else{
+                            window.location.href = '/task4';
+                        }
                     });
 
                     // Hide task buttons
@@ -168,7 +179,12 @@
                     // Add event listener for the singleButton
                     document.getElementById('singleButton').addEventListener('click', function() {
                     // Reload the page
-                        location.reload();
+                        if (refreshCount < 10){
+                            location.reload();
+                        }
+                        else{
+                            window.location.href = '/task4';
+                        }
                     });
 
                     hideTaskText()
